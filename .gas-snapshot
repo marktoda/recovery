@@ -1,0 +1,2 @@
+RecoveryContractTest:testDeployGas() (gas: 314062)
+RecoveryContractTest:testOnlyOwner() (gas: 9436)
