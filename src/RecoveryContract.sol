@@ -27,4 +27,7 @@ contract RecoveryContract is BaseRecoveryContract {
     function owner() internal view override returns (address) {
         return internalOwner;
     }
+
+    receive() external payable {}
+    fallback() external payable {}
 }
