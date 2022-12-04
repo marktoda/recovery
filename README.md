@@ -17,6 +17,9 @@ Note if you have more than one contract to recover, this is NOT the most gas-opt
 Deploy a RecoveryContract using the _any_ nonce and sender address. Generate EIP-1167 proxy bytecode _offchain_ targeting the deployed contract. Deploy this proxy bytecode using the correct nonce and sender address.
 This is the most optimized method if you have multiple contracts to recover for a given owner. Integration is a bit of a pain as EIP-1167 data is generally not deployed directly from an EOA.
 
+**Factory Usage**
+RecoveryContract itself acts as a factory and can deploy child contracts using its own contract nonce. If the contract you are trying to recover was deployed with CREATE by a factory, you can use this functionality to recover its address as well.
+
 ## API
 
 **constructor(owner)**
