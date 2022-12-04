@@ -14,7 +14,7 @@ abstract contract BaseRecoveryContract {
     }
 
     /// @notice calls an address with arbitrary data and value specified by the owner
-    function call(address to, uint256 value, bytes memory data) public onlyOwner {
+    function call(address to, uint256 value, bytes memory data) external onlyOwner {
         (bool success,) = to.call{value: value}(data);
         if (!success) revert CallFailed();
     }
