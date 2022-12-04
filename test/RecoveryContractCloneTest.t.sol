@@ -18,7 +18,7 @@ contract RecoveryContractCloneTest is BaseRecoveryContractTest {
         _parent = new RecoveryContract(_owner);
         vm.prank(_owner);
         _parent.deployChildren(1);
-        _recovery = RecoveryContractClone(computeCreateAddress(address(_parent), 1));
+        _recovery = RecoveryContractClone(payable(computeCreateAddress(address(_parent), 1)));
     }
 
     function testDeployGas() public {

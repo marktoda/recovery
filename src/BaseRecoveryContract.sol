@@ -20,4 +20,7 @@ abstract contract BaseRecoveryContract {
     }
 
     function owner() internal view virtual returns (address);
+
+    receive() external payable {}
+    fallback() external payable {}
 }
