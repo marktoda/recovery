@@ -18,8 +18,8 @@ contract RecoveryContract is BaseRecoveryContract {
     /// @dev useful in the case that the contract needing recovery was deployed by a factory
     /// @dev inherits the owner of this recovery contract
     function deployChildren(uint256 num) external onlyOwner {
+        bytes memory data = abi.encodePacked(internalOwner);
         for (uint256 i = 0; i < num; i++) {
-            bytes memory data = abi.encodePacked(internalOwner);
             ClonesWithImmutableArgs.clone(address(this), data);
         }
     }
