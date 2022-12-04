@@ -2,10 +2,9 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import {ClonesWithImmutableArgs} from "clones-with-immutable-args/ClonesWithImmutableArgs.sol";
 import {GasSnapshot} from "forge-gas-snapshot/GasSnapshot.sol";
 import {ERC20} from "openzeppelin-contracts/token/ERC20/ERC20.sol";
-import {Call, BaseRecoveryContract} from "../src/BaseRecoveryContract.sol";
+import {Call, RecoveryContract} from "../src/RecoveryContract.sol";
 import {MockFailingContract} from "./mock/MockFailingContract.sol";
 
 abstract contract BaseRecoveryContractTest is Test, GasSnapshot {
@@ -13,34 +12,38 @@ abstract contract BaseRecoveryContractTest is Test, GasSnapshot {
     error CallFailed();
 
     address internal owner;
-    address internal impl;
-    BaseRecoveryContract internal recovery;
+    RecoveryContract internal recovery;
     string internal snapPrefix = "";
 
     function setUp() public virtual;
 
-    function testOnlyOwner() public {
+    function testOnlyOwnerCallSingle() public {
         address recipient = address(1);
         vm.expectRevert(Unauthorized.selector);
         recovery.call(recipient, 1 ether, hex"");
     }
 
+    function testOnlyOwnerCallBatch() public {
+        address recipient = address(1);
+        Call[] memory calls = new Call[](1);
+        calls[0] = Call(recipient, 1 ether, hex"");
+        vm.expectRevert(Unauthorized.selector);
+        recovery.call(calls);
+    }
+
     function testDeployChild() public {
-        vm.prank(owner);
         snap("DeployChildren");
         recovery.deployChildren(1);
         snapEnd();
     }
 
     function testDeploy10Children() public {
-        vm.prank(owner);
         snap("Deploy10Children");
         recovery.deployChildren(10);
         snapEnd();
     }
 
     function testDeploy100Chidlren() public {
-        vm.prank(owner);
         snap("Deploy100Children");
         recovery.deployChildren(100);
         snapEnd();
@@ -51,6 +54,24 @@ abstract contract BaseRecoveryContractTest is Test, GasSnapshot {
         vm.prank(owner);
         vm.expectRevert(CallFailed.selector);
         recovery.call(recipient, 0, abi.encodePacked(MockFailingContract.fail.selector));
+    }
+
+    function testCanReceiveEther() public {
+        address sender = address(5);
+        vm.deal(sender, 1 ether);
+        vm.prank(sender);
+        (bool success,) = address(recovery).call{value: 1 ether}(hex"");
+        assertTrue(success);
+        assertEq(address(recovery).balance, 1 ether);
+    }
+
+    function testCanReceiveEtherWithData() public {
+        address sender = address(5);
+        vm.deal(sender, 1 ether);
+        vm.prank(sender);
+        (bool success,) = address(recovery).call{value: 1 ether}(hex"123412341324");
+        assertTrue(success);
+        assertEq(address(recovery).balance, 1 ether);
     }
 
     function testRecoverEtherInsufficientBalance() public {

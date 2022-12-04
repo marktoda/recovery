@@ -17,7 +17,7 @@ contract RecoveryContract {
     error Unauthorized();
     error CallFailed();
 
-    address immutable private owner;
+    address private immutable owner;
 
     modifier onlyOwner() virtual {
         if (msg.sender != owner) revert Unauthorized();
@@ -29,7 +29,7 @@ contract RecoveryContract {
     }
 
     /// @notice calls an address with arbitrary data and value specified by the owner
-    function call(address to, uint256 value, bytes memory data) external onlyOwner {
+    function call(address to, uint256 value, bytes memory data) public onlyOwner {
         (bool success,) = to.call{value: value}(data);
         if (!success) revert CallFailed();
     }
@@ -38,20 +38,19 @@ contract RecoveryContract {
     function call(Call[] memory calls) external onlyOwner {
         for (uint256 i = 0; i < calls.length; i++) {
             Call memory callData = calls[i];
-            (bool success,) = callData.to.call{value: callData.value}(callData.data);
-            if (!success) revert CallFailed();
+            call(callData.to, callData.value, callData.data);
         }
     }
 
     /// @notice deploys a sub-recovery address
     /// @dev useful in the case that the contract needing recovery was deployed by a factory
     /// @dev inherits the owner of this recovery contract
-    function deployChildren(uint256 num) external onlyOwner {
+    function deployChildren(uint256 num) external {
         for (uint256 i = 0; i < num; i++) {
             // note that the clone does not need an initializer
             // because owner is immutable, it is inherited upon delegatecall
             // note also that clones can themselves deploy children,
-            // as clones to calls are delegatecall-chained
+            // as calls to clones are delegatecall-chained
             // this results in slightly higher runtime gas costs for clones-of-clones and
             // each subsequent layer, but I expect it to rarely be useful beyond 1 or 2 layers.
             Clones.clone(address(this));
