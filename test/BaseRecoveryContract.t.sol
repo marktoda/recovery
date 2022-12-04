@@ -33,19 +33,19 @@ abstract contract BaseRecoveryContractTest is Test, GasSnapshot {
 
     function testDeployChild() public {
         snap("DeployChildren");
-        recovery.deployChildren(1);
+        recovery.clone(1);
         snapEnd();
     }
 
     function testDeploy10Children() public {
         snap("Deploy10Children");
-        recovery.deployChildren(10);
+        recovery.clone(10);
         snapEnd();
     }
 
     function testDeploy100Chidlren() public {
         snap("Deploy100Children");
-        recovery.deployChildren(100);
+        recovery.clone(100);
         snapEnd();
     }
 

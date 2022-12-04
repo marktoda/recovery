@@ -45,7 +45,7 @@ contract RecoveryContract {
     /// @notice deploys a sub-recovery address
     /// @dev useful in the case that the contract needing recovery was deployed by a factory
     /// @dev inherits the owner of this recovery contract
-    function deployChildren(uint256 num) external {
+    function clone(uint256 num) external {
         for (uint256 i = 0; i < num; i++) {
             // note that the clone does not need an initializer
             // because owner is immutable, it is inherited upon delegatecall

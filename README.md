@@ -34,7 +34,7 @@ Call an arbitrary address with given data and ETH value. Main function used for 
 
 Performs a batch of calls.
 
-**deployChildren(num)**
+**clone(num)**
 
 Deploys the given number of children contracts. These function the same as the parent and inherit its owner.
 

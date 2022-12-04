@@ -10,11 +10,11 @@ contract RecoveryContractChildOfChildTest is BaseRecoveryContractTest {
         owner = vm.addr(1234);
         RecoveryContract parent = new RecoveryContract(owner);
         vm.prank(owner);
-        parent.deployChildren(1);
+        parent.clone(1);
         RecoveryContract middle = RecoveryContract(payable(computeCreateAddress(address(parent), 1)));
 
         vm.prank(owner);
-        middle.deployChildren(1);
+        middle.clone(1);
         recovery = RecoveryContract(payable(computeCreateAddress(address(middle), 1)));
 
         snapPrefix = "ChildOfChild";
