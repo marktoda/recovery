@@ -17,9 +17,11 @@ contract RecoveryContract is BaseRecoveryContract {
     /// @notice deploys a sub-recovery address
     /// @dev useful in the case that the contract needing recovery was deployed by a factory
     /// @dev inherits the owner of this recovery contract
-    function deployChild() external onlyOwner returns (address) {
-        bytes memory data = abi.encodePacked(internalOwner);
-        return ClonesWithImmutableArgs.clone(address(this), data);
+    function deployChildren(uint256 num) external onlyOwner {
+        for (uint256 i = 0; i < num; i++) {
+            bytes memory data = abi.encodePacked(internalOwner);
+            ClonesWithImmutableArgs.clone(address(this), data);
+        }
     }
 
     function owner() internal view override returns (address) {
