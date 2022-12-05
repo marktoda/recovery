@@ -1,10 +1,8 @@
 # Recovery Contract
 
-You have a contract on chain X, but you accidentally sent funds to the contract's address on chain Y. But it doesn't exist on chain Y!
+This tiny recovery contract is intended as a simple, cost-optimized way to recover funds that were accidentally sent to a contract on the wrong chain.
 
-You could re-deploy the contract on chain Y to recover the funds, but that could be cost-prohibitive (i.e. if you've done this many many times). Even worse, if your contract on chain X deployed child contracts, we would need to grind out all of those deployments on chain Y to get to the correct contract nonce.
-
-This tiny recovery contract is intended as a simple, cost-optimized way to recover funds that were lost in this way.
+The deployer of the contract can deploy recovery contracts to the correct address and recover funds using admin privileges. Support for multiple contracts and contracts created from factories is also supported through efficient self-cloning.
 
 ## Usage
 
